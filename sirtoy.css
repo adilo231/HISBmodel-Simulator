@@ -4,8 +4,6 @@ body {
 
 div#container {
    border-style: solid;
-   border-width: 1px;
-   border-color: #eee;
    margin: 10px;
 }
 
@@ -58,7 +56,7 @@ div#graph-layout {
    background: #fafafa;
    border-style: solid;
    border-width: 2px;
-   border-color: #eee;
+   border-color: #3498db;
    clear: both;
    position: relative;
 }
@@ -102,21 +100,34 @@ span#start-text {
   font-size: 28px;
   text-align: left;
   float: left;
-  color: #666;
+  color: #3498db;
   padding: 10px;
 }
 
 button#reset-button {
   float: right;
-  font-size: 28px;
-  color: #666;
+  
   pointer-events: all;
 }
 button#Start-button {
    float: right;
-   font-size: 28px;
-   color: #666;
+   
+   
    pointer-events: all;
+ }
+ button#Start-button, button#reset-button {
+    margin: 10px;
+    background: #fff;
+    padding: 10px 20px;
+    font-size: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #444;
+    border: 2px solid #3498db;
+ }
+
+ button#Start-button:hover,button#reset-button:hover{
+   color: #3498db;
  }
 
 div#credits {
