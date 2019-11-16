@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>                                                                  
+ <head>                                                                  
+ <script type="text/javascript" src="jquery-1.7.1.min.js"></script>          
+ <script type="text/javascript" src="jquery.flot.min.js"></script>
+ <script type="text/javascript" src="d3.min.js"></script>
+ <script type="text/javascript" src="d3.geom.min.js"></script>
+ <script type="text/javascript" src="d3.layout.min.js"></script>
+ <link type="text/css" rel="stylesheet" href="sirtoy.css"/>
+ <title>SIR BIT</title>
+ </head>
+
+<body>
+
+  <div id="container">
+
+  <div id="epicurves"></div>
+   <div id="epicurves2"></div>
+  
+
+   
+
+
+  <div id="counters">
+    <span id="susceptible"><span id="count_S">10</span> susceptible</span><br />
+    <span id="infectious"><span id="count_I">0</span> infectious</span><br />
+    <span id="recovered"><span id="count_R">0</span> recovered</span>
+ </div>
+
+ <div id="controls">
+   <span>p(<span style="color: #00f">S</span> + <span style="color: #f00">I</span> &rarr; <span style="color: #f00">I</span> + <span style="color: #f00">I</span>) = <input id="p_SI" type="text" name="p_SI" value="0.00" /></span><br />
+   <span>p(<span style="color: #f00">I</span> &rarr; <span style="color: #0f0">R</span>) = <input id="p_IR" type="text" name="p_IR" value="0.00" /></span><br />
+   <span> Simulation step time <input id="Time_sime" type="text" name="Time_sime" value="0.00" /></span>
+ </div>
+
+  <div id="graph-layout">
+    <div id="graph-control">
+      <span id="start-text">Select infected nodes or click start</span>
+      <button id="Start-button">Start</button>
+      <button id="reset-button">Reset</button>
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript" src="sirtoy.js"></script>
+  
+ </body>                                                                 
+</html>
