@@ -206,6 +206,7 @@ function update_plot () {
 function update_counters () {
   $("#count_I").html(epi_state.I);
   $("#count_R").html(epi_state.R);
+  $("#count_S").html(epi_state.S);
 }
 
 function update_p_SI () {

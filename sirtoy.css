@@ -2,6 +2,12 @@ body {
   font-family: Sans-Serif;
 }
 
+rect {
+   fill: none;
+   pointer-events: all;
+ }
+ 
+ 
 div#container {
    border-style: solid;
    margin: 10px;
@@ -27,7 +33,8 @@ div#controls {
  width: 75px;
  padding: 3px;
  font-size: 32px;
- border: 1px solid #aaa;
+ margin-top: 10px;
+ border: 2px solid #3498db;
 }
 
 span#susceptible {
