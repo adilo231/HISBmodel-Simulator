@@ -57,15 +57,34 @@ span#count_S, span#count_I, span#count_R {
    font-size: 48px;
    font-weight: bold;
 }
-
-div#graph-layout {
+div#graphs {
+  
+   float: left;
    height: 650px;
-   margin: 20px;
+   width: 100%;
+  clear: both;
+   position: relative;
+}
+div#graph-layout {
+   margin: 5px;
+   float: left;
+   height: 650px;
+   width: 49%;
    background: #fafafa;
    border-style: solid;
    border-width: 2px;
    border-color: #3498db;
-   clear: both;
+   position: relative;
+}
+div#graph-layout_opinion{
+   margin: 5px;
+   float: left;
+   height: 650px;
+   width: 49%;
+   background: #fafafa;
+   border-style: solid;
+   border-width: 2px;
+   border-color: #3498db;
    position: relative;
 }
 div#epicurves2 {
@@ -105,11 +124,12 @@ div#graph-control {
    pointer-events: none;
 }
 
-span#start-text {
+span#start-text,span#start-text2  {
   font-size: 28px;
   text-align: left;
   float: left;
-  color: #3498db;
+  stroke-opacity: 0.5;
+  color: #000;
   padding: 10px;
 }
 

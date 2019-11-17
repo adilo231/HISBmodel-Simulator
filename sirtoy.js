@@ -19,7 +19,10 @@ var End = 0;
 var nodeArray = G.nodes;
 var edgeArray = G.links;
 
+
+
 var sir_color = { S: "#0000ff", I: "#ff0000", R: "#00ff00" }
+var Opinion_color = {N:"#0000ff", Su: "#00ffff", D: "#fff000" }
 
 var epi_state = { S: nodeArray.length, I: 0, R: 0 };
 
@@ -51,6 +54,7 @@ var plot2 = $.plot($("#epicurves2"), [], plotOptions);
 
 
 var kArray = [];
+var Node_opinion=[];
 
 for (i in nodeArray) {
   kArray[nodeArray[i].name] = 0;
@@ -64,16 +68,40 @@ for (i in edgeArray) {
 for (i in nodeArray) {
   nodeArray[i].k = kArray[i];
   nodeArray[i].state = "S";
+  nodeArray[i].opinion = "N";
+ 
 }
 
 
 var w = "100%";
 var h = 650;
+var vis2 = d3.select("#graph-layout_opinion")
+  .append("svg:svg")
+  .attr("width", w)
+  .attr("height", h)
+  .call(d3.behavior.zoom().on("zoom", function () {
+    vis2.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+  }))
+  .append("g");
 
 var vis = d3.select("#graph-layout")
   .append("svg:svg")
   .attr("width", w)
-  .attr("height", h);
+  .attr("height", h)
+  .call(d3.behavior.zoom().on("zoom", function () {
+    vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+  }))
+  .append("g");
+  
+  var force2 = d3.layout.force()
+  .charge(-100)
+  .linkStrength(0.5)
+  .friction(0.6)
+  .gravity(0.02)
+  .linkDistance(100)
+  .nodes(nodeArray)
+  .links(edgeArray)
+  .size([300, h]);
 
 var force = d3.layout.force()
   .charge(-100)
@@ -83,13 +111,15 @@ var force = d3.layout.force()
   .linkDistance(100)
   .nodes(nodeArray)
   .links(edgeArray)
-  .size([900, h]);
+  .size([300, h]);
 
+ 
  
 
   
 
-force.on("tick", function () {
+
+  force.on("tick", function () {
   vis.selectAll("line.link")
     .attr("x1", function (d) { return d.source.x; })
     .attr("y1", function (d) { return d.source.y; })
@@ -101,6 +131,21 @@ force.on("tick", function () {
     .attr("cy", function (d) { return d.y; })
     .style("fill", function (d) { return sir_color[d.state]; });
 });
+
+force2.on("tick", function () {
+  vis2.selectAll("line.link")
+    .attr("x1", function (d) { return d.source.x; })
+    .attr("y1", function (d) { return d.source.y; })
+    .attr("x2", function (d) { return d.target.x; })
+    .attr("y2", function (d) { return d.target.y; });
+
+  vis2.selectAll("circle.node")
+    .attr("cx", function (d) { return d.x; })
+    .attr("cy", function (d) { return d.y; })
+    .style("fill", function (d) { return Opinion_color[d.opinion]; });
+});
+
+
 
 $("#p_SI").val(p_SI)
 $("#p_SI").keyup(update_p_SI);
@@ -145,6 +190,8 @@ function run_SIR() {
       Pr = i.k / (i.k + j.k);
 
       if (Math.random() < Pr*p_SI) {
+        
+        j.opinion=i.opinion;
         j.new_state = "I";
         epi_state.I++;
         epi_state.S--;
@@ -193,6 +240,8 @@ function update_graph() {
     .attr("x2", function (d) { return d.target.x; })
     .attr("y2", function (d) { return d.target.y; });
      x.exit().remove();
+     
+    
 
   x = vis.selectAll("circle.node").data(nodeArray, function (d) { return d.name; });
   x.enter().insert("svg:circle")
@@ -202,10 +251,32 @@ function update_graph() {
     .attr("r", function (d) { return 4 * Math.sqrt(d.k); })
     .style("fill", function (d) { return sir_color[d.state]; })
     .call(force.drag)
-    .on("click", function (d, i) { if (running == 0 && valid_data == 1 && d.state == "S") { d.state = "I"; epi_state.S--; epi_state.I++; NodeSelected = 1; } });
+    .on("click", function (d, i) { if (running == 0 && valid_data == 1 && d.state == "S") { d.opinion="Su";d.state = "I"; epi_state.S--; epi_state.I++; NodeSelected = 1; } });
   x.exit().remove();
-
   force.start();
+
+  x = vis2.selectAll("line.link").data(edgeArray, function (d) { return d.source.name + "-" + d.target.name; });
+  x.enter().insert("svg:line", "circle.node")
+    .attr("class", "link")
+    .attr("x1", function (d) { return d.source.x; })
+    .attr("y1", function (d) { return d.source.y; })
+    .attr("x2", function (d) { return d.target.x; })
+    .attr("y2", function (d) { return d.target.y; });
+     x.exit().remove();
+     
+    
+
+  x = vis2.selectAll("circle.node").data(nodeArray, function (d) { return d.name; });
+  x.enter().insert("svg:circle")
+    .attr("class", "node")
+    .attr("cx", function (d) { return d.x; })
+    .attr("cy", function (d) { return d.y; })
+    .attr("r", function (d) { return 4 * Math.sqrt(d.k); })
+    .style("fill", function (d) { return sir_color[d.state]; })
+    .call(force2.drag)
+    .on("click", function (d, i) { if (running == 0 && d.state == "S") { d.opinion="Su";d.state = "I"; epi_state.S--; epi_state.I++; NodeSelected = 1; }else{ if(running == 0 && d.opinion=="D"){d.opinion="Su";}else{d.opinion="D";} }});
+    x.exit().remove();
+  force2.start();
 
 }
 
@@ -270,6 +341,7 @@ function Start_propagation() {
     reset_all();
     if (NodeSelected == 1) {
       $("#start-text").fadeOut();
+      $("#start-text2").fadeOut();
       running = 1;
     }
     else {
@@ -286,11 +358,13 @@ function Start_propagation() {
       }
       NodeSelected == 1;
       $("#start-text").fadeOut();
+      $("#start-text2").fadeOut();
       running = 1;
     }
   }
   else { if (NodeSelected == 1) {
     $("#start-text").fadeOut();
+    $("#start-text2").fadeOut();
     running = 1;
   }
   else {
@@ -298,7 +372,12 @@ function Start_propagation() {
     while (i <= 10) {
       ID = Math.floor(Math.random() * nodeArray.length)
       if (nodeArray[ID].state != 'I') {
-        nodeArray[ID].state = "I"; epi_state.S--; epi_state.I++; NodeSelected = 1;
+        nodeArray[ID].state = "I";
+        if(Math.random()>0.5) 
+        nodeArray[ID].opinion = "Su";
+        else
+        nodeArray[ID].opinion = "D";
+        epi_state.S--; epi_state.I++; NodeSelected = 1;
         update_graph();
         
         i++;
@@ -308,6 +387,7 @@ function Start_propagation() {
     update_counters();
     NodeSelected == 1;
     $("#start-text").fadeOut();
+    $("#start-text2").fadeOut();
     running = 1;
   }}
 
@@ -328,10 +408,13 @@ function reset_all() {
   update_counters();
 
   for (k in nodeArray)
+  {
     nodeArray[k].state = "S";
-
+    nodeArray[k].opinion = "N";
+  }
   update_graph();
 
   $("#start-text").fadeIn();
+  $("#start-text2").fadeIn();
 }
 

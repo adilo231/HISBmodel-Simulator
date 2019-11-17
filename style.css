@@ -79,7 +79,8 @@ footer {
 	text-align: right;
 }
 footer p {
-	padding: 20px;
+    padding: 20px;
+    clear: both;
 }
 address {
     padding: 10px 20px 30px 10px;
@@ -104,6 +105,7 @@ aside > div {
 body > section {
     max-width: 1500px;
     margin: auto;
+    clear: both;
     padding: 30px 0px;
     }
 
