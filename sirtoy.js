@@ -262,7 +262,6 @@ function Start_propagation () {
     var i=1;
     while ( i<=10){
       ID=Math.floor(Math.random()*nodeArray.length)
-     
         if (nodeArray[ID].state != 'I'){
         nodeArray[ID].state = "I"; epi_state.S--; epi_state.I++; NodeSelected=1;
         update_graph();
@@ -280,7 +279,7 @@ function Start_propagation () {
 }
 function reset_all () {
 	running = 0;
-
+  NodeSelected=0;
     count = 0;
     epi_state = { S: nodeArray.length, I: 0, R: 0 };
 
