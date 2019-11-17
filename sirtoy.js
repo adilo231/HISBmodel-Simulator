@@ -132,8 +132,7 @@ function run_SIR() {
 
         if (i.state == "I" && j.state == "S" && j.new_state == "S") {
           Pr=i.k/(i.k+j.k);
-          alert(Pr);
-          if (Math.random() < Pr) {
+                    if (Math.random() < Pr) {
              j.new_state = "I";
              epi_state.I ++;
              epi_state.S --;
