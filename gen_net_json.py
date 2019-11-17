@@ -3,7 +3,8 @@ import sys, json
 import networkx as nx
 from networkx.readwrite import json_graph
 
-g = nx.barabasi_albert_graph(150, 2)
+g = nx.barabasi_albert_graph(400, 2)
+
 #g = nx.grid_3d_graph(10,10)
 
 nodes = g.nodes()
