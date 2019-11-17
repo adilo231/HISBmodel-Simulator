@@ -7,7 +7,7 @@ g = nx.barabasi_albert_graph(150, 2)
 #g = nx.grid_3d_graph(10,10)
 
 nodes = g.nodes()
-nodes.sort()
+
 
 data = json_graph.node_link_data(g)
 

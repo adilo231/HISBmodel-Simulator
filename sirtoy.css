@@ -86,15 +86,16 @@ div#epicurves {
 
 
 circle.node {
-  stroke: #000;
+  stroke: #fff;
   stroke-width: 1.5px;
+  border-width: 2px;
   fill: #ff0;
 }
 
 line.link {
   stroke: #333;
-  stroke-opacity: .75;
-  stroke-width: 1.5px;
+  stroke-opacity: 0.5;
+  stroke-width: 2px;
 }
 
 div#graph-control {
