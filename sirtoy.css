@@ -22,7 +22,8 @@ div#counters {
 }
 
 div#controls {
-   font-size: 36px;
+   font-size: 30px;
+   font-family: Verdana, Geneva, Tahoma, sans-serif;
    float: right;
    height: 180px;
    margin: 20px;
@@ -111,7 +112,7 @@ span#start-text {
   padding: 10px;
 }
 
-button#reset-button {
+button#reset-button , button#Pause-button {
   float: right;
   
   pointer-events: all;
@@ -122,7 +123,7 @@ button#Start-button {
    
    pointer-events: all;
  }
- button#Start-button, button#reset-button {
+ button#Start-button, button#reset-button, button#Pause-button {
     margin: 10px;
     background: #fff;
     padding: 10px 20px;
@@ -133,7 +134,7 @@ button#Start-button {
     border: 2px solid #3498db;
  }
 
- button#Start-button:hover,button#reset-button:hover{
+ button#Start-button:hover,button#reset-button:hover,button#Pause-button:hover{
    color: #3498db;
  }
 

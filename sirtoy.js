@@ -5,6 +5,7 @@ G =
 
 var valid_data = 1;
 var running = 0;
+var NodeSelected = 0;
 var p_SI = 0.2;
 var p_IR = 0.18;
 var time_interval = 1000;
@@ -106,13 +107,16 @@ update_counters();
 
 $("#reset-button").click(reset_all);
 $("#Start-button").click(Start_propagation);
-
-
+$("#Pause-button").click(Pause_sim);
+function Pause_sim(){
+  if(running==1){
+    running=0;
+  }
+}
 setInterval(run_SIR, time_interval);
 
 function run_SIR() {
-
-    if (running == 0)
+  if (running == 0)
        return;
 
     for (k in nodeArray)
@@ -127,7 +131,9 @@ function run_SIR() {
         }
 
         if (i.state == "I" && j.state == "S" && j.new_state == "S") {
-          if (Math.random() < p_SI) {
+          Pr=i.k/(i.k+j.k);
+          alert(Pr);
+          if (Math.random() < Pr) {
              j.new_state = "I";
              epi_state.I ++;
              epi_state.S --;
@@ -183,7 +189,7 @@ function update_graph () {
       .attr("r", function(d) { return 3*Math.sqrt(d.k); })
       .style("fill", function(d) { return sir_color[d.state]; } )
       .call(force.drag)
-      .on("click", function(d,i) { if (running == 0 && valid_data == 1 && d.state == "S") {d.state = "I"; epi_state.S--; epi_state.I++;  }} );
+      .on("click", function(d,i) { if (running == 0 && valid_data == 1 && d.state == "S") {d.state = "I"; epi_state.S--; epi_state.I++; NodeSelected=1; }} );
   x.exit().remove();
 
   force.start();
@@ -247,10 +253,27 @@ function update_Sim_time () {
   setInterval(run_SIR, time_interval);
  }
 function Start_propagation () {
+  if (NodeSelected==1){
   $("#start-text").fadeOut();
-  
-
-  running = 1;
+  running = 1;}
+  else{
+    var i=1;
+    while ( i<=10){
+      ID=Math.floor(Math.random()*nodeArray.length)
+     
+        if (nodeArray[ID].state != 'I'){
+        nodeArray[ID].state = "I"; epi_state.S--; epi_state.I++; NodeSelected=1;
+        update_graph();
+        update_plot();
+        update_counters();
+        alert(nodeArray[ID].k);
+        i++;
+      }
+    }
+    $("#start-text").fadeOut();
+    running = 1;
+    NodeSelected==1;
+  }
   
 
 }
