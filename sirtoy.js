@@ -268,7 +268,6 @@ function Start_propagation () {
         update_graph();
         update_plot();
         update_counters();
-        alert(nodeArray[ID].k);
         i++;
       }
     }
