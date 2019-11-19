@@ -11,7 +11,7 @@ var running = 0;
 var NodeSelected = 0;
 var p_SI = 0.2;
 var p_IR = 0.18;
-var time_interval = 1000;
+var time_interval = 10;
 var count = 0;
 var timeseries;
 var End = 0;
@@ -21,21 +21,27 @@ var edgeArray = G.links;
 
 
 
-var sir_color = { S: "#0000ff", I: "#ff0000", R: "#00ff00" }
+var sir_color = { S: "#0000ff", I: "#ff0000", R: "#00ff00" , RuP: "#0f00f0"}
 var Opinion_color = {N:"#0000ff", Su: "#00ffff", D: "#fff000" }
 
-var epi_state = { S: nodeArray.length, I: 0, R: 0 };
+var epi_state = { S: nodeArray.length, I: 0, R: 0, OpP:0,OpD:0,RuP:0 };
 
 function reset_history() {
   timeseries = {
     S: { label: "S", color: sir_color.S, data: [] },
     I: { label: "I", color: sir_color.I, data: [] },
-    R: { label: "R", color: sir_color.R, data: [] }
+    R: { label: "R", color: sir_color.R, data: [] },
+    RuP: { label: "RuP", color: sir_color.RuP, data: [] },
+    OpP: { label: "Su", color: Opinion_color.Su, data: [] },
+    OpD: { label: "D", color: Opinion_color.D, data: [] },
   };
 
   timeseries.S.data.push([count, epi_state.S]);
   timeseries.I.data.push([count, epi_state.I]);
   timeseries.R.data.push([count, epi_state.R]);
+  timeseries.RuP.data.push([count, epi_state.RuP]);
+  timeseries.OpP.data.push([count, epi_state.OpD]);
+  timeseries.OpD.data.push([count, epi_state.OpD]);
 }
 
 reset_history();
@@ -48,7 +54,10 @@ var plotOptions = {
 };
 
 var plot = $.plot($("#epicurves"), [], plotOptions);
-var plot2 = $.plot($("#epicurves2"), [], plotOptions);
+var plot2 = $.plot($("#Infcurves2"), [], plotOptions);
+var plotRP = $.plot($("#RumorPopuCurves"), [], plotOptions);
+var plotOp = $.plot($("#OpinionCurves"), [], plotOptions);
+
 
 
 
@@ -194,7 +203,16 @@ function run_SIR() {
         j.opinion=i.opinion;
         j.new_state = "I";
         epi_state.I++;
+        epi_state.RuP=epi_state.RuP+j.k;
         epi_state.S--;
+        
+        if(j.opinion=="Su"){
+          epi_state.OpP++;
+
+        }else{
+          
+          epi_state.OpD++;
+        }
       }
     }
   }
@@ -205,6 +223,7 @@ function run_SIR() {
         nodeArray[k].new_state = "R";
         epi_state.R++;
         epi_state.I--;
+        epi_state.RuP-=nodeArray[k].k;
       }
     }
   }
@@ -219,6 +238,9 @@ function run_SIR() {
   timeseries.S.data.push([count, epi_state.S]);
   timeseries.I.data.push([count, epi_state.I]);
   timeseries.R.data.push([count, epi_state.R]);
+  timeseries.RuP.data.push([count, epi_state.RuP]);
+  timeseries.OpP.data.push([count, epi_state.OpP]);
+  timeseries.OpD.data.push([count, epi_state.OpD]);
 
   update_plot();
 
@@ -251,7 +273,8 @@ function update_graph() {
     .attr("r", function (d) { return 4 * Math.sqrt(d.k); })
     .style("fill", function (d) { return sir_color[d.state]; })
     .call(force.drag)
-    .on("click", function (d, i) { if (running == 0 && valid_data == 1 && d.state == "S") { d.opinion="Su";d.state = "I"; epi_state.S--; epi_state.I++; NodeSelected = 1; } });
+    .on("click", function (d, i) { if (running == 0 && valid_data == 1 && d.state == "S") { d.opinion="Su";epi_state.OpP++; d.state = "I"; epi_state.S--;epi_state.RuP+=d.k; epi_state.I++; NodeSelected = 1; }update_counters();
+    update_plot(); });
   x.exit().remove();
   force.start();
 
@@ -274,7 +297,8 @@ function update_graph() {
     .attr("r", function (d) { return 4 * Math.sqrt(d.k); })
     .style("fill", function (d) { return sir_color[d.state]; })
     .call(force2.drag)
-    .on("click", function (d, i) { if (running == 0 && d.state == "S") { d.opinion="Su";d.state = "I"; epi_state.S--; epi_state.I++; NodeSelected = 1; }else{ if(running == 0 && d.opinion=="D"){d.opinion="Su";}else{d.opinion="D";} }});
+    .on("click", function (d, i) { if (running == 0 && d.state == "S") { d.opinion="Su";d.state = "I"; epi_state.OpP++; epi_state.S--;epi_state.RuP+=d.k; epi_state.I++; NodeSelected = 1; }else{ if(running == 0 && d.opinion=="D"){d.opinion="Su";epi_state.OpP++;epi_state.OpD--;}else{d.opinion="D";epi_state.OpS--;epi_state.OpD++;} }update_counters();
+    update_plot();});
     x.exit().remove();
   force2.start();
 
@@ -289,7 +313,15 @@ function update_plot() {
   plot2.setupGrid();
   plot2.draw();
 
+  plotRP.setData([timeseries.OpD,timeseries.OpP]);
+  plotRP.setupGrid();
+  plotRP.draw();
 
+  
+  plotOp.setData([timeseries.RuP]);
+  plotOp.setupGrid();
+  plotOp.draw();
+ 
 }
 
 
@@ -349,9 +381,14 @@ function Start_propagation() {
       while (i <= 10) {
         ID = Math.floor(Math.random() * nodeArray.length)
         if (nodeArray[ID].state != 'I') {
-          nodeArray[ID].state = "I"; epi_state.S--; epi_state.I++; NodeSelected = 1;
+          if(Math.random()>0.5) {
+            nodeArray[ID].opinion = "Su";
+            epi_state.OpP++;}
+            else{
+            nodeArray[ID].opinion = "D";
+            epi_state.OpD++;}
+          nodeArray[ID].state = "I"; epi_state.S--; epi_state.I++;epi_state.RuP+=nodeArray[ID].k; NodeSelected = 1;
           update_graph();
-          update_plot();
           update_counters();
           i++;
         }
@@ -373,12 +410,18 @@ function Start_propagation() {
       ID = Math.floor(Math.random() * nodeArray.length)
       if (nodeArray[ID].state != 'I') {
         nodeArray[ID].state = "I";
-        if(Math.random()>0.5) 
+        if(Math.random()>0.5) {
         nodeArray[ID].opinion = "Su";
-        else
+        epi_state.OpP++;}
+        else{
         nodeArray[ID].opinion = "D";
-        epi_state.S--; epi_state.I++; NodeSelected = 1;
+        epi_state.OpD++;}
+        epi_state.S--; epi_state.I++;
+        epi_state.RuP+=nodeArray[ID].k;
+        NodeSelected = 1;
         update_graph();
+        update_counters();
+        update_plot();
         
         i++;
       }
@@ -400,7 +443,7 @@ function reset_all() {
   NodeSelected = 0;
   count = 0;
   End = 0;
-  epi_state = { S: nodeArray.length, I: 0, R: 0 };
+  epi_state = { S: nodeArray.length, I: 0, R: 0, OpP:0,OpD:0,RuP:0 };
 
   reset_history();
   update_plot();

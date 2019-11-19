@@ -87,7 +87,7 @@ div#graph-layout_opinion{
    border-color: #3498db;
    position: relative;
 }
-div#epicurves2 {
+div#Infcurves2, div#RumorPopuCurves,div#OpinionCurves {
    width: 320px;
    height: 180px;
    background: #fff;
