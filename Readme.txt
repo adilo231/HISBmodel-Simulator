@@ -1,4 +1,5 @@
-Thanks for downloading this theme!
+
+The website template was downloaded from:
 
 Theme Name: Eterna
 Theme URL: https://bootstrapmade.com/eterna-free-multipurpose-bootstrap-template/
