@@ -13,7 +13,7 @@ var time_interval = 10;
 var count = 0;
 var timeseries;
 var End = 0;
-
+var Statistical_anal=0;
 
 var NodeDeg=[];
 var nodeArray = G.nodes;
@@ -778,6 +778,17 @@ function Update_stat() {
 }
 
 function update_Statistics() {
+  Stat.ADD.data=[];
+  Stat.SDD.data=[];
+
+  plotSRDD.setData([Stat.SDD]);
+  plotSRDD.setupGrid();
+  plotSRDD.draw();
+
+  plotARDD.setData([Stat.ADD]);
+  plotARDD.setupGrid();
+  plotARDD.draw();    
+
   var AccRuorDeg=[];
   var SentRuorDeg=[];
   for (let index = 0; index < nodeArray.length; index++) {
@@ -800,8 +811,7 @@ function update_Statistics() {
   }
  
  
- 
- alert(Stat.SDD);
+
   
   plotSRDD.setData([Stat.SDD]);
   plotSRDD.setupGrid();
