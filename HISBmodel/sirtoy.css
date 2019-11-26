@@ -149,8 +149,8 @@ div#graph-layout_opinion{
    
    
 }
-div#Nodes_degree_distribution{
-   width: 500px;
+div#Nodes_degree_distribution,div#Acc_RumorDD,div#Sent_RumorDD{
+   width: 450px;
    height: 250px;
    background: #fff;
    margin: 20px;

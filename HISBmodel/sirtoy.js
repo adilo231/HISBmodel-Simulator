@@ -4,7 +4,7 @@ G_2 = { "directed": false, "graph": [["name", "barabasi_albert_graph(500,2)"]], 
 
 
 // -----------------------------------------------------------
-G = G_1
+G = G_2
 var valid_data = 1;
 var running = 0;
 var running1 = 0;
@@ -13,7 +13,7 @@ var time_interval = 10;
 var count = 0;
 var timeseries;
 var End = 0;
-var DegX_Axies=0;
+
 
 var NodeDeg=[];
 var nodeArray = G.nodes;
@@ -30,6 +30,8 @@ var epi_state = { S: nodeArray.length, I: 0, R: 0, OpP: 0, OpD: 0, RuP: 0 };
 
 Stat={
   DD: { label: "Degree Distribution", color: "#0000ff", data: [] },
+  ADD: { label: "Accepted Rumors", color: "#0000ff", data: [] },
+  SDD: { label: "Sent Rumors", color: "#ff00ff", data: [] },
 
 };
 function reset_history() {
@@ -72,6 +74,8 @@ var plot2 = $.plot($("#Infcurves2"), [], plotOptions);
 var plotRP = $.plot($("#RumorPopuCurves"), [], plotOptions);
 var plotOp = $.plot($("#OpinionCurves"), [], plotOptions);
 var plotDD = $.plot($("#Nodes_degree_distribution"), [], plotOptions2);
+var plotARDD = $.plot($("#Acc_RumorDD"), [], plotOptions2);
+var plotSRDD = $.plot($("#Sent_RumorDD"), [], plotOptions2);
 
 
 
@@ -136,7 +140,7 @@ for (i in nodeArray) {
 
 }
 
-for (let index = 0; index < MaxDeg-1; index++) {
+for (let index = 1; index <= MaxDeg; index++) {
   NodeDeg[index]=0;
   
  
@@ -147,7 +151,7 @@ for (i in nodeArray) {
   
 }
 
-for (let index = 0; index < MaxDeg-1; index++) {
+for (let index = 1; index <= MaxDeg; index++) {
   if (NodeDeg[index] !=0 ) {
     Stat.DD.data.push([index, NodeDeg[index]]); 
   }
@@ -157,6 +161,8 @@ for (let index = 0; index < MaxDeg-1; index++) {
 plotDD.setData([Stat.DD]);
 plotDD.setupGrid();
 plotDD.draw();
+
+
 
 var div = d3.select("body").append("div")
   .attr("class", "tooltip")
@@ -766,6 +772,44 @@ function Update_stat() {
   $("#Stat_AR").html(NbrRumorA);
   $("#Stat_PO").html(NPOS);
   $("#Stat_DO").html(NDOS);
+  update_Statistics() ;
+
+
+}
+
+function update_Statistics() {
+  var AccRuorDeg=[];
+  var SentRuorDeg=[];
+  for (let index = 0; index < nodeArray.length; index++) {
+    if (AccRuorDeg[nodeArray[index].k]== null)  AccRuorDeg[nodeArray[index].k]=nodeArray[index].NbrAccpR;else AccRuorDeg[nodeArray[index].k]+=nodeArray[index].NbrAccpR;
+    if (SentRuorDeg[nodeArray[index].k]== null)  SentRuorDeg[nodeArray[index].k]=nodeArray[index].NbrSendR;else SentRuorDeg[nodeArray[index].k]+=nodeArray[index].NbrSendR;
+    
+  }
+
+
+  for (let index = 1; index <= MaxDeg; index++) {
+    if (NodeDeg[index] !=0 ) {
+     
+      Stat.ADD.data.push([index, AccRuorDeg[index]/NodeDeg[index]]);
+      Stat.SDD.data.push([index, SentRuorDeg[index]/NodeDeg[index]]);
+      
+      
+    }
+    
+    
+  }
+ 
+ 
+ 
+ alert(Stat.SDD);
+  
+  plotSRDD.setData([Stat.SDD]);
+  plotSRDD.setupGrid();
+  plotSRDD.draw();
+
+  plotARDD.setData([Stat.ADD]);
+  plotARDD.setupGrid();
+  plotARDD.draw();
 
 
 
